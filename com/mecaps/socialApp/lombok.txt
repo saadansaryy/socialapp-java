@@ -1,0 +1,12 @@
+lombok library
+@Getter / @Setter
+@NoArgsConstructor, @AllArgsConstructor,
+@RequiredArgsConstructor(final, @NonNull)
+
+@Data
+A shortcut for:
+@Getter, @Setter, @ToString, @EqualsAndHashCode, and
+@RequiredArgsConstructor
+
+@Builder
+Creates a Builder Pattern implementation for Object creation.
