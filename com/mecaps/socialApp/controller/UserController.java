@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -33,6 +34,11 @@ public class UserController {
     @GetMapping("/get/{id}")
     public UserResponse getUserById(@PathVariable Long id){
         return userService.getUserById(id);
+    }
+
+    @GetMapping("/findByUserName")
+    public List<User> getUserByNameUsingCriteria(@RequestParam String userName){
+        return userService.getUserByNameUsingCriteriaAPI(userName);
     }
 
     @GetMapping("/by-email")

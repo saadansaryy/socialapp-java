@@ -5,6 +5,8 @@ import com.mecaps.socialApp.request.UserRequest;
 import com.mecaps.socialApp.response.UserResponse;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 public interface UserService {
     ResponseEntity<?> getAllUsers();
 
@@ -17,4 +19,6 @@ public interface UserService {
     UserResponse updateUser(UserRequest userRequest, Long id);
 
     String deleteUser(Long id);
+
+    List<User> getUserByNameUsingCriteriaAPI(String userName);
 }

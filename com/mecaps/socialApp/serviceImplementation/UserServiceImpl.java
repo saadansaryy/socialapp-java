@@ -6,8 +6,15 @@ import com.mecaps.socialApp.repository.UserRepository;
 import com.mecaps.socialApp.request.UserRequest;
 import com.mecaps.socialApp.response.UserResponse;
 import com.mecaps.socialApp.service.UserService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +24,13 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     final private UserRepository userRepository;
+    final private EntityManager entityManager;
+    final private PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, EntityManager entityManager, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
+        this.entityManager = entityManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ResponseEntity<?> getAllUsers() {
@@ -44,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUserName(userRequest.getUserName());
         user.setEmail(userRequest.getEmail());
-        user.setPassword(userRequest.getPassword());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
         User save = userRepository.save(user);
 
@@ -75,5 +86,28 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
         userRepository.delete(user);
         return "User with id : " + id + " deleted successfully";
+    }
+
+    @Override
+    public List<User> getUserByNameUsingCriteriaAPI(String userName) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        Predicate condition = criteriaBuilder.equal(root.get("userName"),userName);
+        criteriaQuery.select(root).where(condition);
+        TypedQuery<User> query = entityManager.createQuery(criteriaQuery);
+        return query.getResultList();
+
+        // final query
+        //select * from user where userName = ?;
+
+
+//        How Criteria API Works Internally
+//            EntityManager provides CriteriaBuilder
+//            You create a CriteriaQuery object for a specific entity
+//            Use Root to specify FROM table
+//            Add Predicates for conditions
+//            Execute using entityManager.createQuery(cq)
+//            Hibernate translates it into SQL automatically.
     }
 }
