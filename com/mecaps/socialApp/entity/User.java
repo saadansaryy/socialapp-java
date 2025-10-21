@@ -15,9 +15,12 @@ public class User {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false,unique = false)
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false,unique = true)
     private String email;
+
+    @Column(nullable = false)
+    private String role;
 }

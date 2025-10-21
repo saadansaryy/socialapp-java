@@ -3,11 +3,7 @@ package com.mecaps.socialApp.request;
 import lombok.Data;
 
 @Data
-public class UserRequest {
-
-    private String userName;
+public class AuthDTO {
     private String email;
     private String password;
-    private String role;
-
 }

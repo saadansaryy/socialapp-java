@@ -9,9 +9,12 @@ import lombok.Setter;
 public class CommentResponse {
     private String commentString;
     private PostResponse postResponse;
+    private UserResponse userResponse;
+
 
     public CommentResponse(Comment comment){
         this.commentString = comment.getCommentString();
         this.postResponse = new PostResponse(comment.getPostId());
+        this.userResponse = new UserResponse(comment.getAuthor());
     }
 }
